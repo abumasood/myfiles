@@ -6,4 +6,5 @@
 powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
-. /usr/lib/python3.6/site-packages/powerline/bindings/bash/powerline.sh
+. /Users/mwobaid/Library/Python/3.6/lib/python/site-packages/powerline/bindings/bash/powerline.sh
+
