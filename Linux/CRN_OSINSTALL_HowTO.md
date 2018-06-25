@@ -82,7 +82,8 @@ Install with [npm](https://www.npmjs.com/):
  Install with [npm](https://www.npmjs.com/):
 
 ## Post OS-Install Configuration
-** VMWare Tools Installation **
+
+##### VMWare Tools Installation
 
 _Follow [this document][e80acdd3] by Redhat._
 _Or, [this document][0447dcfb] by VMWare._
