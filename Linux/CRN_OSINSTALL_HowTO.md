@@ -76,7 +76,7 @@ L1SUPVMH5  | L1SRLSRV135 | L1SRLSRV136
 ```
 ## Provisioning App/DB VMs
 Install with [npm](https://www.npmjs.com/):
-
+![](/images/2018/06/vCenter_srvs_list.png)
 
 ## RHEL 6.9 Install
  Install with [npm](https://www.npmjs.com/):
