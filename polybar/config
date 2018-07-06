@@ -116,7 +116,7 @@ font-0 = NotoSans-Regular:size=10;0
 font-1 = fontawesome-regular:size=13:0
 font-2 = NotoMono-Regular: size=10;0
 
-modules-left = i3 xwindow
+modules-left = jgmenu i3 xwindow
 ;modules-center = updates-arch-combined pacman-updates aur-updates kernel memory3 filesystem
 modules-center = updates-arch-combined kernel memory3 filesystem
 modules-right =  mpd weather trash date
@@ -891,6 +891,17 @@ format-underline = #0084FF
 
 ################################################################################
 
+[module/jgmenu]
+type = custom/script
+exec = echo ""
+interval = 120
+
+click-left = "jgmenu_run >/dev/null 2>&1 &"
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+
+################################################################################
+
 [module/load-average]
 type = custom/script
 exec = uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3" "$4" "$5"," }' | sed 's/,//g'
@@ -1068,6 +1079,7 @@ click-right = exec pavucontrol
 click-left = ~/.config/polybar/scripts/pavolume.sh --togmute
 scroll-up = ~/.config/polybar/scripts/pavolume.sh --up
 scroll-down = ~/.config/polybar/scripts/pavolume.sh --down
+format-underline = #3EC13F
 format-foreground = ${colors.foreground}
 format-background = ${colors.background}
 
