@@ -1,5 +1,5 @@
-# i3 configuration files
-Repo for my i3 config files
+# jgmenu configuration files
+Repo for my jgmenu files
 
 ## Purpose
 Store my important config files
