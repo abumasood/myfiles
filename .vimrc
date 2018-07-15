@@ -4,6 +4,9 @@
 " | |  | | (_| | | | (_| (_) | | |_| | |_) | (_| | | (_| |  \ V /| | | | | | | | | (__
 " |_|  |_|\__,_|_|  \___\___/   \___/|_.__/ \__,_|_|\__,_|   \_/ |_|_| |_| |_|_|  \___|
 
+" Credits go to Luke Smith https://github.com/LukeSmithxyz
+" =====================================================================================
+
 set rtp+=/usr/lib/python3.6/site-packages/powerline/bindings/vim
 :set laststatus=2
 
