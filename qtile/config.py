@@ -467,7 +467,7 @@ groups = []
 for gname in 'asdfghjkl':
     groups.append(Group(gname, label=gname.upper()))
 
-
+### Fix conflict with mod + h and others (refer to notes)
 def user_keymap(mod, shift, control, alt):
     for g in groups:
         yield mod + g.name, lazy.group[g.name].toscreen()
@@ -509,7 +509,7 @@ def user_keymap(mod, shift, control, alt):
     # SUPER + SHIFT KEYS    #
     #########################
     yield mod + shift + 'Return', lazy.spawn('thunar')
-    yield mod + shift + 'd', lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'")
+    yield mod + shift + 'm', lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'")
     yield mod + shift + 'q', lazy.window.kill()
     yield mod + shift + 'r', lazy.restart()
     yield mod + shift + 'x', lazy.shutdown()
@@ -593,6 +593,8 @@ def user_keymap(mod, shift, control, alt):
     yield mod + alt + 'Up', lazy.layout.flip_up()
     yield mod + alt + 'Left', lazy.layout.flip_left()
     yield mod + alt + 'Right', lazy.layout.flip_right()
+
+
 
     yield mod + 'Tab', lazy.next_layout()
 
@@ -762,8 +764,8 @@ floating_layout = layout.Floating(
         {'wmclass': 'maketag'},  # gitk
         {'wname': 'branchdialog'},  # gitk
         {'wname': 'pinentry'},  # GPG key password entry
-        {'wmclass': 'oblogout'},  # ssh-askpass
-
+        {'wmclass': 'oblogout'},  # Oblogout Menu
+        {'wmclass': 'xfce4-appfinder'},  # Application Finder
     ],
 )
 
