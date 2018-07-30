@@ -24,6 +24,7 @@ conky -c $HOME/.config/qtile/system-overview &
 compton --config $HOME/.config/qtile/compton.conf &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 /usr/lib/xfce4/notifyd/xfce4-notifyd &
+run volumeicon
 #nitrogen --restore &
 #caffeine &
 #dropbox &

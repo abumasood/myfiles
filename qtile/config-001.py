@@ -289,20 +289,15 @@ def get_cur_grp_name():
 
 
 date_command = ["/usr/bin/date", "+%a %D"]
-kernel_command = ["/usr/bin/uname", "-r"]
+
 
 def get_date():
-    return '  ' + subprocess.check_output(date_command).decode('utf-8').strip()
+    return '📆 ' + subprocess.check_output(date_command).decode('utf-8').strip()
 
-def get_kernel():
-    return '  ' + subprocess.check_output(kernel_command).decode('utf-8').strip()
 
 def get_time():
-    #return '  ' + subprocess.check_output(['/usr/bin/date', '+%I:%M %p']).decode('utf-8').strip()
-    return ' ' + subprocess.check_output(['/usr/bin/date', '+%I:%M %p']).decode('utf-8').strip()
+    return ' ⏰ ' + subprocess.check_output(['/usr/bin/date', '+%I:%M %p']).decode('utf-8').strip()
 
-def myclock():
-    return libqtile.widget.clock()
 
 def get_datetime():
     return get_date() + get_time()
@@ -514,7 +509,7 @@ keys.extend([
 ])
 
 widget_defaults = dict(
-    font='NotoSans',
+    font='xos4 terminus regular',
     fontsize=14,
     padding=5,
 )
@@ -524,34 +519,19 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayoutIcon(scale=0.7, foreground="00BCD4", padding=0, ),
-                widget.GenPollText(func=get_cur_grp_name, update_interval=0.5, foreground='FFBB00', padding=5, font='NotoSans bold', fontsize=16, ),
-                widget.Sep(foreground='968F92', linewidth=2, padding=5, size_percent=55, ),
-                widget.GroupBox(active='6790eb', inactive='F3F4F5', #968F92
-                                this_current_screen_border='FFBB00', #00BCD4
+                widget.CurrentLayoutIcon(scale=0.5, foreground="EFEFEF", ),
+                widget.GenPollText(func=get_cur_grp_name, update_interval=0.5, foreground='EFEFEF', padding=1, ),
+                widget.GroupBox(active='99d1ce', inactive='F3F4F5', #968F92
+                                this_current_screen_border='6790eb', #00BCD4
                                 this_screen_border='00BCD4',
                                 highlight_method='line',
                                 highlight_color=['2F343F', '2F343F'],
                                 fontsize=20,
-                                padding=3,
                                 ),
-                widget.Sep(foreground='968F92', linewidth=2, padding=5, size_percent=55, ),
                 widget.Prompt(fontsize=12, cursor_color='FFFFFF', foreground='FDF3A9', background='271B1B'),
-                widget.WindowName(fontsize=13, foreground='7AA0BC', ),
-    #            widget.Clock(font='NotoSans', fontsize=14, update_interval=1, foreground='B1D0FF', ),
-    #            widget.Memory(fmt='{MemTotal}M', fontsize=21, foreground='F3F4F5', padding=5, update_interval=600, ),
-                widget.GenPollText(func=get_kernel, update_interval=0.5, foreground='6790eb', padding=5, font='NotoSans', fontsize=14, ),
-                widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=55, ),
-                widget.CPUGraph(border_color='3EC13F', border_width=1, core='all', fill_color='3EC13F.3', frequency=1, graph_color='3EC13F', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
-                widget.MemoryGraph(border_color='215578', border_width=1, fill_color='1667EB.3', frequency=1, graph_color='18BAEB', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
-                widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=55, ),
-                widget.DF(foreground='F3F4F5', partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, ),
-                widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=55, ),
-    #            widget.Volume(foreground='F3F4F5',  ),
-                widget.Systray(icon_size=21, ),
-                widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=55, ),
-                widget.GenPollText(func=get_datetime, update_interval=1, font='NotoSans', fongtsize=22, foreground='F3F4F5', ),
-    #            widget.GenPollText(func=myclock, update_interval=1, foreground='B1D0FF', ),
+                widget.WindowName(foreground='7AA0BC', ),
+                widget.GenPollText(func=get_datetime, update_interval=1, foreground='B1D0FF', ),
+                widget.Systray(),3
             ],
             36,
             background=['2F343F', '2F343F'], #1A2024,#060A0F
