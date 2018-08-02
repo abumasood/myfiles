@@ -13,14 +13,14 @@ function run {
 #$HOME/.config/polybar/launch.sh &
 #setxkbmap -layout be
 #feh --bg-scale ~/.config/qtile/wall.png &
-nitrogen --random --set-scaled
+#nitrogen --random --set-scaled
 xsetroot -cursor_name left_ptr &
 run nm-applet &
-run variety &
+#run variety &
 run pamac-tray &
 run xfce4-power-manager &
 numlockx on &
-conky -c $HOME/.config/qtile/system-overview &
+#conky -c $HOME/.config/qtile/system-overview &
 compton --config $HOME/.config/qtile/compton.conf &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 /usr/lib/xfce4/notifyd/xfce4-notifyd &
