@@ -32,6 +32,7 @@ from libqtile import layout, bar, widget, hook
 import os
 import re
 import subprocess
+import json
 
 mod = "mod4"
 term = "/usr/bin/termite"
@@ -39,34 +40,36 @@ home = os.path.expanduser('~')
 client = Client()
 
 cls_grp_dict = {
-    "luakit": "2", "Firefox": "2", "Opera": "2", "Google-chrome": "2",
-    "Chromium": "2", "Vivaldi-stable": "2", "Midori": "2", "Dillo": "2",
-    "Netsurf-gtk3": "2", "QupZilla": "2", "Uget-gtk": "2", "Tor Browser": "2",
-    "Waterfox": "2", "UXTerm": "3", "termite": "3", "Terminator": "3",
+    "luakit": "1", "Firefox": "1", "Opera": "1", "Google-chrome": "1",
+    "Chromium": "1", "Vivaldi-stable": "1", "Midori": "2", "Dillo": "2",
+    "Netsurf-gtk3": "2", "QupZilla": "2", "Uget-gtk": "2", "Tor Browser": "1",
+    "Waterfox": "1", "UXTerm": "3", "termite": "3", "Terminator": "3",
     "termite": "3", "termite": "3", "mlterm": "3", "Lxterminal": "3",
-    "XTerm": "3", "Pcmanfm": "4", "Thunar": "4", "dolphin": "4", "Caja": "4",
-    "Catfish": "4", "Zathura": "5", "libreoffice-writer": "5", "libreoffice": "5",
+    "XTerm": "3", "Pcmanfm": "8", "Thunar": "8", "dolphin": "8", "Caja": "8",
+    "Catfish": "8", "Zathura": "5", "libreoffice-writer": "5", "libreoffice": "5",
     "Leafpad": "5", "kate": "5", "Pluma": "5", "Mousepad": "5",
     "kwrite": "5", "Geany": "5", "Gedit": "5", "Code": "5",
     "Atom": "5", "Gimp": "6", "Gthumb": "6", "org.kde.gwenview": "6",
     "Ristretto": "6", "lximage-qt": "6", "Eom": "6", "Gpicview": "6",
     "vlc": "7", "xv/mplayer": "7", "Clementine": "7", "MPlayer": "7",
-    "smplayer": "7", "mpv": "7", "Gnome-mpv": "7", "Rhythmbox": "7",
-    "Pragha": "7", "Steam": "8", "Wine": "8", "Zenity": "8",
+    "smplayer": "7", "mpv": "7", "Gnome-mpv": "7", "Rhythmbotx": "7",
+    "Pragha": "7", "Steam": "8", "Wine": "8", "thunar": "8",
     "PlayOnLinux": "8", "VirtualBox": "9", "okular": "9", "calibre": "9",
     "octopi": "9", "Pamac-updater": "9", "Pamac-manager": "9", "Lxtask": "9",
     "Dukto": "9", "QuiteRss": "9", "Filezilla": "9",
     "jetbrains-pycharm-ce": "5",
 }
+
 role_grp_dict = {
-    "browser": "2", "gimp-image-window": "5",
+    "browser": "1", "gimp-image-window": "5", "filemanager": "8",
+
 }
 
 group_labels = [
-    "", "", "",
-    "", "", "",
-    "", "", "",
-    "🌑",
+    "", "", "",
+    "", "", "",
+    "", "", "",
+    "",
 ]
 
 group_names = [
@@ -103,7 +106,7 @@ group_layouts = [
 ]
 
 group_matches = [
-    None,
+
     [Match(wm_class=[
         "luakit", "Firefox", "Opera", "Google-chrome",
         "Chromium", "Vivaldi-stable", "Midori",
@@ -112,28 +115,42 @@ group_matches = [
     ], role=["browser"]), ],
 
     [Match(wm_class=[
+        "Zathura", "libreoffice-writer", "libreoffice",
+        "Leafpad", "kate", "Pluma", "Mousepad", "kwrite",
+        "Geany", "Gedit", "Code", "Atom",
+        "jetbrains-pycharm-ce",
+    ]), ],
+
+    [Match(wm_class=[
         "UXTerm", "Termite", "Terminator",
         "termite-tabbed", "termite",
         "XTerm", "mlterm", "Lxterminal",
     ]), ],
 
     [Match(wm_class=[
-        "Pcmanfm", "Thunar", "dolphin",
-        "Caja", "Catfish",
+        "discord",
     ]), ],
-
-    [Match(wm_class=[
-        "Zathura", "libreoffice-writer", "libreoffice",
-        "Leafpad", "kate", "Pluma", "Mousepad", "kwrite",
-        "Geany", "Gedit", "Code", "Atom",
-        "jetbrains-pycharm-ce",
-    ], ), ],
 
     [Match(wm_class=[
         "Gimp", "Gthumb", "org.kde.gwenview",
         "Ristretto", "lximage-qt", "Eom",
         "Gpicview",
     ], role=["gimp-image-window"]), ],
+
+    None,
+
+    [Match(wm_class=[
+        "VirtualBox", "okular", "calibre",
+        "octopi", "Pamac-updater",
+        "Pamac-manager", "Lxtask",
+        "Dukto", "QuiteRss",
+        "Filezilla",
+    ]), ],
+
+    [Match(wm_class=[
+        "Pcmanfm", "Thunar", "thunar", "dolphin",
+        "Caja", "Catfish",
+    ], role=["filemanager"]), ],
 
     [Match(wm_class=[
         "vlc", "xv/mplayer", "Clementine",
@@ -146,14 +163,6 @@ group_matches = [
         "PlayOnLinux",
     ]), ],
 
-    [Match(wm_class=[
-        "VirtualBox", "okular", "calibre",
-        "octopi", "Pamac-updater",
-        "Pamac-manager", "Lxtask",
-        "Dukto", "QuiteRss",
-        "Filezilla",
-    ]), ],
-    None,
 ]
 
 
@@ -545,10 +554,13 @@ screens = [
                 widget.CPUGraph(border_color='3EC13F', border_width=1, core='all', fill_color='3EC13F.3', frequency=1, graph_color='3EC13F', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
                 widget.MemoryGraph(border_color='215578', border_width=1, fill_color='1667EB.3', frequency=1, graph_color='18BAEB', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
-                widget.DF(foreground='F3F4F5', partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, ),
+                widget.DF(foreground='F3F4F5', font='NotoSans', fongtsize=22, partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format='( {p}: {uf}{m} free of {s}{m} | {r:.0f}% used)',  ),
+                #widget.DF(foreground='F3F4F5', partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format='{p} ({uf}{m}|{r:.0f}%)',  ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
     #            widget.Volume(foreground='F3F4F5',  ),
                 widget.Systray(icon_size=18, padding=5, ),
+                widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
+    #            widget.YahooWeather(font='NotoSans', fontsize='14', metric=False, woeid='12791633', user_agent='Qtile', padding=5, format='{location_city}: {condition_temp} °{units_temperature}', update_interval='600', xml=False, up='^', down='v', json=True, ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
                 widget.GenPollText(func=get_datetime, update_interval=1, font='NotoSans', fongtsize=22, foreground='F3F4F5', ),
     #            widget.GenPollText(func=myclock, update_interval=1, foreground='B1D0FF', ),
@@ -593,7 +605,6 @@ floating_layout = layout.Floating(float_rules=[
     {"role": "pop-up"},
     {"role": "prefwindow"},
     {"role": "task_dialog"},
-    {"role": "browser"},
     {"wname": "Module"},
     {"wname": "Terminator Preferences"},
     {"wname": "Search Dialog"},
