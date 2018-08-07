@@ -511,7 +511,7 @@ def user_keymap(mod, shift, control, alt):
     yield mod + 'm', lazy.spawn('pragha')
     yield mod + 'n', lazy.layout.normalize()
     yield mod + 'q', lazy.spawn('firefox')
-    yield mod + 'r', lazy.spawncmd()
+    yield mod + 'r', lazy.spawnqcmd()
     yield mod + 's', lazy.spawn('rofi-theme-selector')
     yield mod + 't', lazy.spawn('termite')
     yield mod + 'v', lazy.spawn('pavucontrol')

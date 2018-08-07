@@ -34,6 +34,21 @@ import re
 import subprocess
 import json
 
+import pickle
+import weakref
+from contextlib import contextmanager, suppress
+from datetime import datetime
+from itertools import islice
+from logging import getLogger
+from pathlib import Path
+
+from libqtile import bar, hook, layout, widget
+from libqtile.command import lazy
+from libqtile.config import Click, Drag, Group, Key, Screen, Rule, Match
+from libqtile.widget.base import ORIENTATION_HORIZONTAL
+from libqtile.widget.base import _TextBox as BaseTextBox
+
+
 mod = "mod4"
 term = "/usr/bin/termite"
 home = os.path.expanduser('~')
@@ -316,35 +331,126 @@ def myclock():
 def get_datetime():
     return get_date() + get_time()
 
-
 keys = [
-    # Switch between windows in current stack pane
-    Key([mod], "k", lazy.layout.down()),
-    Key([mod], "j", lazy.layout.up()),
-    Key([mod], "l", lazy.layout.right()),
-    Key([mod], "h", lazy.layout.left()),
 
-    # Move windows up or down in current stack
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
-
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
-
-    # Switch window focus to other pane(s) of stack
-    Key(["mod1"], "Tab", lazy.layout.next()),
-    Key(["mod1"], "space", lazy.layout.previous()),
-
+    #########################
+    # SUPER + ... KEYS      #
+    #########################
+    Key([mod], "e", lazy.spawn('atom')),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
-    Key([mod, "shift"], "f", lazy.window.toggle_floating()),
+    Key([mod], "h", lazy.spawn('urxvt -e htop')),
+    Key([mod], "p", lazy.spawn('pragha')),
+    #Key([mod], "n", lazy.layout.normalize()),
+    Key([mod], "q", lazy.spawn('firefox')),
+    Key([mod], "r", lazy.spawncmd()),
+    Key([mod], "s", lazy.spawn('rofi-theme-selector')),
+    Key([mod], "t", lazy.spawn('termite')),
+    Key([mod], "v", lazy.spawn('pavucontrol')),
+    Key([mod], "w", lazy.spawn('vivaldi-stable')),
+    Key([mod], "x", lazy.spawn('oblogout')),
+    Key([mod], "Return", lazy.spawn('termite')),
+    #########################
+    # SUPER + FUNCTION KEYS #
+    #########################
+    Key([mod], "F1", lazy.spawn('vivaldi-stable')),
+    Key([mod], "F2", lazy.spawn('atom')),
+    Key([mod], "F3", lazy.spawn('inkscape')),
+    Key([mod], "F4", lazy.spawn('gimp')),
+    Key([mod], "F5", lazy.spawn('meld')),
+    Key([mod], "F6", lazy.spawn('vlc --video-on-top')),
+    Key([mod], "F7", lazy.spawn('virtualbox')),
+    Key([mod], "F8", lazy.spawn('thunar')),
+    Key([mod], "F9", lazy.spawn('evolution')),
+    Key([mod], "F10", lazy.window.toggle_floating()),
+    Key([mod], "F11", lazy.spawn('rofi -show run -fullscreen')),
+    Key([mod], "F12", lazy.spawn('rofi -show run')),
+    #########################
+    # SUPER + SHIFT KEYS    #
+    #########################
+    Key([mod, "shift"], "Return", lazy.spawn('thunar')),
+    Key([mod, "shift"], "m", lazy.spawn("dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'")),
+    Key([mod, "shift"], "q", lazy.window.kill()),
+    Key([mod, "shift"], "r", lazy.restart()),
+    Key([mod, "shift"], "r", lazy.restart()),
+    Key([mod, "shift"], "Down", lazy.layout.shuffle_down()),
+    Key([mod, "shift"], "Up", lazy.layout.shuffle_up()),
+    Key([mod, "shift"], "Left", lazy.layout.shuffle_left()),
+    Key([mod, "shift"], "Right", lazy.layout.shuffle_right()),
+    #########################
+    # CONTROL + ALT KEYS    #
+    #########################
+    Key(["mod1", "control"], "a", lazy.spawn('atom')),
+    Key(["mod1", "control"], "b", lazy.spawn('thunar')),
+    Key(["mod1", "control"], "c", lazy.spawn('Catfish')),
+    Key(["mod1", "control"], "e", lazy.spawn('evolution')),
+    Key(["mod1", "control"], "f", lazy.spawn('firefox')),
+    Key(["mod1", "control"], "g", lazy.spawn('chromium -no-default-browser-check')),
+    Key(["mod1", "control"], "i", lazy.spawn('nitrogen')),
+    Key(["mod1", "control"], "k", lazy.spawn('slimlock')),
+    Key(["mod1", "control"], "m", lazy.spawn('xfce4-settings-manager')),
+    Key(["mod1", "control"], "o", lazy.spawn('~/.config/bspwm/scripts/compton-toggle.sh')),
+    Key(["mod1", "control"], "r", lazy.spawn('rofi-theme-selector')),
+    Key(["mod1", "control"], "s", lazy.spawn('subl3')),
+    Key(["mod1", "control"], "t", lazy.spawn('termite')),
+    Key(["mod1", "control"], "u", lazy.spawn('pavucontrol')),
+    Key(["mod1", "control"], "v", lazy.spawn('vivaldi-stable')),
+    Key(["mod1", "control"], "w", lazy.spawn('atom')),
+    Key(["mod1", "control"], "Return", lazy.spawn('termite')),
+    #########################
+    # ALT + ... KEYS        #
+    #########################
+    Key(["mod1"], "t", lazy.spawn('variety -t')),
+    #Key(["mod1"], "n", lazy.spawn('variety -n')),
+    Key(["mod1"], "n", lazy.spawn('nitrogen --random --set-scaled')),
+    Key(["mod1"], "p", lazy.spawn('variety -p')),
+    Key(["mod1"], "f", lazy.spawn('variety -f')),
+    Key(["mod1"], "Left", lazy.spawn('variety -p')),
+    #Key(["mod1"], "Right", lazy.spawn('variety -n')),
+    Key(["mod1"], "Right", lazy.spawn('nitrogen --random --set-scaled')),
+    Key(["mod1"], "Up", lazy.spawn('variety --pause')),
+    Key(["mod1"], "Down", lazy.spawn('variety --resume')),
+    Key(["mod1"], "F2", lazy.spawn('gmrun')),
+    Key(["mod1"], "F3", lazy.spawn('xfce4-appfinder')),
+    #########################
+    #VARIETY KEYS WITH PYWAL#
+    #########################
+    Key(["mod1", "shift"], "t", lazy.spawn('variety -t && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&')),
+    Key(["mod1", "shift"], "p", lazy.spawn('variety -p && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&')),
+    Key(["mod1", "shift"], "f", lazy.spawn('variety -f && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&')),
+    Key(["mod1", "shift"], "u", lazy.spawn('walu.sh')),
+    #########################
+    # CONTROL + SHIFT KEYS  #
+    #########################
+    #yield control + shift + 'Escape', lazy.spawn('xfce4-taskmanager')
+    #########################
+    #     SCREENSHOTS       #
+    #########################
+    Key([mod, "shift"], "Print", lazy.spawn('gnome-screenshot -i')),
+    Key([mod], "Print", lazy.spawn('xfce4-screenshooter')),
+    Key([], "Print", lazy.spawn("/usr/bin/scrot " + home + "/Pictures/screenshot_%Y_%m_%d_%H_%M_%S.png")),
+    #########################
+    #     MULTIMEDIA KEYS   #
+    #########################
 
-    Key([mod, "shift"], "Left", window_to_prev_group()),
-    Key([mod, "shift"], "Right", window_to_next_group()),
-
-    Key([mod], "Left", go_to_prev_group()),
-    Key([mod], "Right", go_to_next_group()),
-
+    #########################
+    # Qtile LAYOUT KEYS     #
+    #########################
+    Key([mod], "k", lazy.layout.down()),
+    Key([mod], "Down", lazy.layout.down()),
+    Key([mod], "j", lazy.layout.up()),
+    Key([mod], "Up", lazy.layout.up()),
+    Key([mod], "l", lazy.layout.right()),
+    Key([mod], "Right", lazy.layout.right()),
+    Key([mod], "h", lazy.layout.left()),
+    Key([mod], "Left", lazy.layout.left()),
+    # Grow size up, down, left, and right
     Key([mod, "control"], "l",
+        lazy.layout.grow_right(),
+        lazy.layout.grow(),
+        lazy.layout.increase_ratio(),
+        lazy.layout.delete(),
+        ),
+    Key([mod, "control"], "Right",
         lazy.layout.grow_right(),
         lazy.layout.grow(),
         lazy.layout.increase_ratio(),
@@ -356,14 +462,28 @@ keys = [
         lazy.layout.decrease_ratio(),
         lazy.layout.add(),
         ),
-
+    Key([mod, "control"], "Left",
+        lazy.layout.grow_left(),
+        lazy.layout.shrink(),
+        lazy.layout.decrease_ratio(),
+        lazy.layout.add(),
+        ),
     Key([mod, "control"], "k",
         lazy.layout.grow_up(),
         lazy.layout.grow(),
         lazy.layout.decrease_nmaster(),
         ),
-
+    Key([mod, "control"], "Up",
+        lazy.layout.grow_up(),
+        lazy.layout.grow(),
+        lazy.layout.decrease_nmaster(),
+        ),
     Key([mod, "control"], "j",
+        lazy.layout.grow_down(),
+        lazy.layout.shrink(),
+        lazy.layout.increase_nmaster(),
+        ),
+    Key([mod, "control"], "Down",
         lazy.layout.grow_down(),
         lazy.layout.shrink(),
         lazy.layout.increase_nmaster(),
@@ -376,68 +496,40 @@ keys = [
     Key([mod], "n",
         lazy.layout.normalize(),
         ),
-
+#########################################################
     Key([mod, "mod1"], "k", lazy.layout.flip_up()),
     Key([mod, "mod1"], "j", lazy.layout.flip_down()),
 
     Key([mod, "mod1"], "l", lazy.layout.flip_right()),
     Key([mod, "mod1"], "h", lazy.layout.flip_left()),
-
+##########################################################
+    # Switch window focus to other pane(s) of stack
+    Key(["mod1"], "Tab", lazy.layout.next()),
+    Key(["mod1"], "space", lazy.layout.previous()),
+    # Move windows up or down in current stack
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
+    Key([mod, "shift"], "Up", lazy.layout.shuffle_up()),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
+    Key([mod, "shift"], "Down", lazy.layout.shuffle_down()),
+    Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
+    Key([mod, "shift"], "Right", lazy.layout.shuffle_right()),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
+    Key([mod, "shift"], "Left", lazy.layout.shuffle_left()),
+    # Switch Groups using a prompt
+    Key([mod], "g", lazy.switchgroup()),
+    # Toggle between different layouts as defined below
+    Key([mod], "Tab", lazy.next_layout()),
+    Key([mod], "space", lazy.prev_layout()),
+    Key([mod, "shift"], "f", lazy.window.toggle_floating()),
     # Swap panes of split stack
     Key([mod, "shift"], "space",
         lazy.layout.rotate()
         ),
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
-    Key([mod], "Return", lazy.spawn(term)),
-
-    # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout()),
-    Key([mod], "space", lazy.prev_layout()),
-    Key([mod], "x", lazy.window.kill()),
-
+    # Reload Qtile
     Key([mod, "shift"], "r", lazy.restart()),
-    Key([mod, "shift"], "q", lazy.shutdown()),
-    Key([mod, "shift"], "Pause", exit_menu()),
-    Key([mod, "shift"], "Scroll_Lock", lazy.spawn("/usr/bin/slock")),
-    Key([mod, "shift", "control"], "Print", lazy.spawn("/usr/bin/systemctl -i suspend")),
-    Key([mod], "r", lazy.spawncmd()),
-    Key([mod], "g", lazy.switchgroup()),
+    # Exit Qtile
+    Key([mod, "shift"], "x", lazy.shutdown()),
 
-    # Applications
-    Key([mod], "d", lazy.spawn("/usr/bin/rofi -modi run,drun -show drun run")),
-    Key([mod], "Delete", lazy.function(find_or_run("/usr/bin/lxtask", ("Lxtask",),
-                                                   cls_grp_dict["Lxtask"]))),
-    Key([mod], "F1", lazy.function(find_or_run("/usr/bin/catfish", ("Catfish",),
-                                              cls_grp_dict["Catfish"], ("^/usr/bin/python /usr/bin/catfish$",)))),
-    Key([mod], "e", lazy.function(find_or_run("/usr/bin/leafpad",
-                                              ("Leafpad", "Mousepad", "Pluma"), cls_grp_dict["Leafpad"],
-                                              (regex("leafpad"),
-                                               regex("mousepad"), regex("pluma"))))),
-    Key([mod, "shift"], "e", lazy.function(find_or_run("/usr/bin/geany", ("Geany", "kate"),
-                                                       cls_grp_dict["Geany"], (regex("geany"), regex("kate"))))),
-    Key([mod], "Home", lazy.function(find_or_run("/usr/bin/pcmanfm", ("Pcmanfm", "Thunar", "dolphin"),
-                                                 cls_grp_dict["Pcmanfm"],
-                                                 (regex("pcmanfm"), regex("thunar"), regex("dolphin"))))),
-    Key([mod, "shift"], "Home", lazy.function(find_or_run(term + " -e /usr/bin/ranger", (),
-                                                          cls_grp_dict["termite"]))),
-    Key([mod], "p", lazy.function(find_or_run("/usr/bin/pragha", ("Pragha", "Clementine"),
-                                              cls_grp_dict["Pragha"], [regex("pragha"), regex("clementine")]))),
-    Key([mod], "c", lazy.function(find_or_run(term + " -e /usr/bin/cmus", (),
-                                              cls_grp_dict["termite"]))),
-    Key([mod], "w", lazy.function(find_or_run("/usr/bin/firefox", ("Firefox", "Chromium", "Vivaldi-stable"),
-                                              cls_grp_dict["Firefox"],
-                                              ("/usr/lib/firefox/firefox", "/usr/lib/chromium/chromium",
-                                               "/opt/vivaldi/vivaldi-bin")))),
-    Key([mod, "shift"], "w", lazy.function(find_or_run(home +
-                                                       "/Apps/Internet/tor-browser_en-US/Browser/start-tor-browser "
-                                                       "--detach ", ("Tor Browser",), cls_grp_dict["Tor Browser"],
-                                                       ("\./firefox",)))),
-    Key([mod], "i", lazy.function(find_or_run("/usr/bin/pamac-manager", ["Pamac-manager"],
-                                              cls_grp_dict["Pamac-manager"]))),
     Key([], "F10", to_urgent()),
 
     # Media player controls
@@ -446,8 +538,6 @@ keys = [
     Key([], "XF86AudioNext", lazy.spawn("/usr/bin/playerctl next")),
     Key([], "XF86AudioPrev", lazy.spawn("/usr/bin/playerctl previous")),
 
-    # Screenshot
-    Key([], "Print", lazy.spawn("/usr/bin/scrot " + home + "/Pictures/Screenshots/screenshot_%Y_%m_%d_%H_%M_%S.png")),
 
     # Pulse Audio controls
     Key([], "XF86AudioMute",
@@ -459,7 +549,7 @@ keys = [
 ]
 
 layout_style = {
-    'font': 'xos4 terminus regular 13',
+    'font': 'xos4 terminus reparagular 13',
     'margin': 0,
     'border_width': 3,
     'border_normal': '#000000',
@@ -554,11 +644,11 @@ screens = [
                 widget.CPUGraph(border_color='3EC13F', border_width=1, core='all', fill_color='3EC13F.3', frequency=1, graph_color='3EC13F', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
                 widget.MemoryGraph(border_color='215578', border_width=1, fill_color='1667EB.3', frequency=1, graph_color='18BAEB', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
-                widget.DF(foreground='F3F4F5', font='NotoSans', fongtsize=22, partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format='( {p}: {uf}{m} free of {s}{m} | {r:.0f}% used)',  ),
+                widget.DF(foreground='F3F4F5', font='NotoSans', fongtsize=22, partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format=' {p}: {uf}{m} free of {s}{m} - {r:.0f}% used',  ),
                 #widget.DF(foreground='F3F4F5', partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format='{p} ({uf}{m}|{r:.0f}%)',  ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
     #            widget.Volume(foreground='F3F4F5',  ),
-                widget.Systray(icon_size=18, padding=5, ),
+                widget.Systray(background='2F343F', foreground='B1D0FF', icon_size=18, padding=5, ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
     #            widget.YahooWeather(font='NotoSans', fontsize='14', metric=False, woeid='12791633', user_agent='Qtile', padding=5, format='{location_city}: {condition_temp} °{units_temperature}', update_interval='600', xml=False, up='^', down='v', json=True, ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
@@ -690,3 +780,53 @@ def autostart():
             f.write(
                 datetime.now().strftime('%Y-%m-%dT%H:%M') +
                 + ' ' + str(e) + '\n')
+
+
+
+
+
+
+    #Key([mod, "shift"], "Left", window_to_prev_group()),
+    #Key([mod, "shift"], "Right", window_to_next_group()),
+    # Toggle between split and unsplit sides of stack.
+    # Split = all windows displayed
+    # Unsplit = 1 window displayed, like Max layout, but still with
+    # multiple stack panes
+    #Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
+    #Key([mod], "Return", lazy.spawn()),
+    #Key([mod], "x", lazy.window.kill()),
+    #Key([mod, "shift"], "Pause", exit_menu()),
+    #Key([mod, "shift"], "Scroll_Lock", lazy.spawn("/usr/bin/slock")),
+    #Key([mod, "shift", "control"], "Print", lazy.spawn("/usr/bin/systemctl -i suspend")),
+
+    # Applications
+    #Key([mod], "d", lazy.spawn("/usr/bin/rofi -modi run,drun -show drun run")),
+    #Key([mod], "Delete", lazy.function(find_or_run("/usr/bin/lxtask", ("Lxtask",),
+    #                                                cls_grp_dict["Lxtask"]))),
+    #Key([mod], "F1", lazy.function(find_or_run("/usr/bin/catfish", ("Catfish",),
+    #                                          cls_grp_dict["Catfish"], ("^/usr/bin/python /usr/bin/catfish$",)))),
+    #Key([mod], "e", lazy.function(find_or_run("/usr/bin/leafpad",
+    #                                          ("Leafpad", "Mousepad", "Pluma"), cls_grp_dict["Leafpad"],
+    #                                          (regex("leafpad"),
+    #                                           regex("mousepad"), regex("pluma"))))),
+    #Key([mod, "shift"], "e", lazy.function(find_or_run("/usr/bin/geany", ("Geany", "kate"),
+    #                                                   cls_grp_dict["Geany"], (regex("geany"), regex("kate"))))),
+    #Key([mod], "Home", lazy.function(find_or_run("/usr/bin/pcmanfm", ("Pcmanfm", "Thunar", "dolphin"),
+    #                                             cls_grp_dict["Pcmanfm"],
+    #                                             (regex("pcmanfm"), regex("thunar"), regex("dolphin"))))),
+    #Key([mod, "shift"], "Home", lazy.function(find_or_run(term + " -e /usr/bin/ranger", (),
+    #                                                      cls_grp_dict["termite"]))),
+    #Key([mod], "p", lazy.function(find_or_run("/usr/bin/pragha", ("Pragha", "Clementine"),
+    #                                          cls_grp_dict["Pragha"], [regex("pragha"), regex("clementine")]))),
+    #Key([mod], "c", lazy.function(find_or_run(term + " -e /usr/bin/cmus", (),
+    #                                          cls_grp_dict["termite"]))),
+    #Key([mod], "w", lazy.function(find_or_run("/usr/bin/firefox", ("Firefox", "Chromium", "Vivaldi-stable"),
+    #                                          cls_grp_dict["Firefox"],
+    #                                          ("/usr/lib/firefox/firefox", "/usr/lib/chromium/chromium",
+    #                                           "/opt/vivaldi/vivaldi-bin")))),
+    #Key([mod, "shift"], "w", lazy.function(find_or_run(home +
+    #                                                   "/Apps/Internet/tor-browser_en-US/Browser/start-tor-browser "
+    #                                                   "--detach ", ("Tor Browser",), cls_grp_dict["Tor Browser"],
+    #                                                   ("\./firefox",)))),
+    #Key([mod], "i", lazy.function(find_or_run("/usr/bin/pamac-manager", ["Pamac-manager"],
+    #                                          cls_grp_dict["Pamac-manager"]))),
