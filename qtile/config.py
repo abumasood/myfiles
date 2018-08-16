@@ -786,11 +786,6 @@ def autostart():
 
 
 
-    #Key([mod, "shift"], "Left", window_to_prev_group()),
-    #Key([mod, "shift"], "Right", window_to_next_group()),
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
     #Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
     #Key([mod], "Return", lazy.spawn()),
