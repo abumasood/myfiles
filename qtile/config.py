@@ -624,7 +624,7 @@ screens = [
         top=bar.Bar(
             [
                 widget.CurrentLayoutIcon(scale=0.7, foreground="00BCD4", padding=0, ),
-                widget.GenPollText(func=get_cur_grp_name, update_interval=0.5, foreground='FFBB00', padding=5, font='NotoSans bold', fontsize=16, ),
+    ##            widget.GenPollText(func=get_cur_grp_name, update_interval=0.5, foreground='FFBB00', padding=5, font='NotoSans bold', fontsize=16, ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=5, size_percent=50, ),
                 widget.GroupBox(active='6790eb', inactive='F3F4F5', #968F92
                                 this_current_screen_border='FFBB00', #00BCD4
@@ -633,6 +633,49 @@ screens = [
                                 highlight_color=['2F343F', '2F343F'],
                                 fontsize=20,
                                 padding=3,
+                                visible_groups="6,7,9,0",
+                                ),
+                widget.Sep(foreground='968F92', linewidth=2, padding=5, size_percent=50, ),
+                widget.Prompt(font= 'NotoSans', fontsize=14, cursor_color='FFBB00', foreground='FDF3A9', background='2F343F'),
+                widget.WindowName(fontsize=13, foreground='7AA0BC', ),
+    #            widget.Clock(font='NotoSans', fontsize=14, update_interval=1, foreground='B1D0FF', ),
+    #            widget.Memory(fmt='{MemTotal}M', fontsize=21, foreground='F3F4F5', padding=5, update_interval=600, ),
+    ##            widget.GenPollText(func=get_kernel, update_interval=0.5, foreground='6790eb', padding=5, font='NotoSans', fontsize=14, ),
+    ##            widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
+    ##            widget.CPUGraph(border_color='3EC13F', border_width=1, core='all', fill_color='3EC13F.3', frequency=1, graph_color='3EC13F', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
+    ##            widget.MemoryGraph(border_color='215578', border_width=1, fill_color='1667EB.3', frequency=1, graph_color='18BAEB', line_width=1, margin_x=3, margin_y=3, samples=100, start_pos='bottom', type='linefill', ),
+    ##            widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
+    ##            widget.DF(foreground='F3F4F5', font='NotoSans', fongtsize=22, partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format=' {p}: {uf}{m} free of {s}{m} - {r:.0f}% used',  ),
+                #widget.DF(foreground='F3F4F5', partition='/', measure='G', padding=5, update_interval=60, visible_on_warn=False, warn_color='ff0000', warn_space=2, format='{p} ({uf}{m}|{r:.0f}%)',  ),
+    ##            widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
+    #            widget.Volume(foreground='F3F4F5',  ),
+    ##            widget.Systray(background='2F343F', foreground='B1D0FF', icon_size=18, padding=5, ),
+    ##            widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
+    #            widget.YahooWeather(font='NotoSans', fontsize='14', metric=False, woeid='12791633', user_agent='Qtile', padding=5, format='{location_city}: {condition_temp} °{units_temperature}', update_interval='600', xml=False, up='^', down='v', json=True, ),
+    ##            widget.Sep(foreground='968F92', linewidth=2, padding=10, size_percent=50, ),
+    ##            widget.GenPollText(func=get_datetime, update_interval=1, font='NotoSans', fongtsize=22, foreground='F3F4F5', ),
+    #            widget.GenPollText(func=myclock, update_interval=1, foreground='B1D0FF', ),
+            ],
+            36,
+            background=['2F343F', '2F343F'], #1A2024,#060A0F
+            opacity=0.96,
+        ),
+    ),
+
+    Screen(
+        top=bar.Bar(
+            [
+                widget.CurrentLayoutIcon(scale=0.7, foreground="00BCD4", padding=0, ),
+    ##            widget.GenPollText(func=get_cur_grp_name, update_interval=0.5, foreground='FFBB00', padding=5, font='NotoSans bold', fontsize=16, ),
+                widget.Sep(foreground='968F92', linewidth=2, padding=5, size_percent=50, ),
+                widget.GroupBox(active='6790eb', inactive='F3F4F5', #968F92
+                                this_current_screen_border='FFBB00', #00BCD4
+                                this_screen_border='00BCD4',
+                                highlight_method='line',
+                                highlight_color=['2F343F', '2F343F'],
+                                fontsize=20,
+                                padding=3,
+                                visible_groups="1,2,3,4,5,8",
                                 ),
                 widget.Sep(foreground='968F92', linewidth=2, padding=5, size_percent=50, ),
                 widget.Prompt(font= 'NotoSans', fontsize=14, cursor_color='FFBB00', foreground='FDF3A9', background='2F343F'),

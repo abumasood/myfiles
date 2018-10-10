@@ -199,6 +199,10 @@ padding-right = 1
 module-margin-left = 3
 module-margin-right = 3
 
+; Enable support for inter-process messaging
+; See the Messaging wiki page for more details.
+enable-ipc = true
+
 ;https://github.com/jaagr/polybar/wiki/Fonts
 font-0 = NotoSans-Regular:size=10;0
 font-1 = fontawesome-regular:size=10:0
@@ -257,6 +261,10 @@ padding-right = 1
 module-margin-left = 3
 module-margin-right = 3
 
+; Enable support for inter-process messaging
+; See the Messaging wiki page for more details.
+enable-ipc = true
+
 ;https://github.com/jaagr/polybar/wiki/Fonts
 font-0 = NotoSans-Regular:size=10;0
 font-1 = fontawesome-regular:size=10:0
@@ -303,6 +311,10 @@ line-color = #f00
 
 wm-restack = bspwm
 override-redirect = true
+
+; Enable support for inter-process messaging
+; See the Messaging wiki page for more details.
+enable-ipc = true
 
 border-size = 0
 ;border-left-size = 0
@@ -538,15 +550,17 @@ format-background = ${colors.background}
 ################################################################################
 ################################################################################
 
-[module/demo]
-type = custom/ipc
-hook-0 = echo foobar
-hook-1 = echo "Files in ${HOME}: $(ls -1a ~ | wc -l)"
-hook-2 = whoami
-initial = 1
-click-left = polybar-msg -p %pid% hook demo 1
-click-right = polybar-msg -p %pid% hook demo 2
-double-click-left = polybar-msg -p %pid% hook demo 3
+[module/arch-aur-updates]
+type = custom/script
+exec = ~/.config/polybar/scripts/check-all-updates.sh
+interval = 1000
+label = Updates: %output%
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+format-prefix = "  "
+format-prefix-foreground = #FFBB00
+format-underline = #FFBB00
+
 
 [module/aur-updates]
 type = custom/script
@@ -895,7 +909,6 @@ format-underline = #0084FF
 type = custom/script
 exec = echo ""
 interval = 120
-
 click-left = "jgmenu_run >/dev/null 2>&1 &"
 format-foreground = ${colors.foreground}
 format-background = ${colors.background}
