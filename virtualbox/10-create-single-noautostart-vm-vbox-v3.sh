@@ -27,21 +27,28 @@ set -e
 echo "#############################################################"
 echo "#        This script will create a virtualbox vm            #"
 echo "#############################################################"
-
 echo -n "Enter vm name: "
 
 read myvmname
-
 myvmhome="$HOME/VirtualBox VMs/$myvmname"
+today=$(date)
+
+# Set basic VM specs. Adjust to your preference
+cpu_num=2       			# Number of CPUs
+ram_size=4096   			# RAM size in MB
+hd_size=20480   			# Hard drive size in MB
+hd_variant="Standard"		# Choose either Standard (Dynamic) or Fixed
+vram_size=128   			# VRAM size in MB
+os_type="ArchLinux_64" 		# Arch Linux 64-bit
 
 # Enter path to your iso here
 #myisopath="$HOME/Downloads/Arco-ISOs-Beta/arcolinux-v19.01.3.iso"
 
 # Create and register VM
-VBoxManage createvm --name $myvmname --ostype ArchLinux_64 --register
+VBoxManage createvm --name $myvmname --ostype $os_type --register
 
 # Add Description
-VBoxManage modifyvm $myvmname --description "Created by Marco Obaid"
+VBoxManage modifyvm $myvmname --description "$myvmname created on $today"
 
 # Set RTC to UTC
 VBoxManage modifyvm $myvmname --rtcuseutc on
@@ -54,7 +61,7 @@ VBoxManage modifyvm $myvmname --boot1 dvd --boot2 disk --boot3 none --boot4 none
 
 # Assign CPUs, Memory, Display, and Video Memory
 VBoxManage modifyvm $myvmname --graphicscontroller vboxvga
-VBoxManage modifyvm $myvmname --cpus 2 --memory 4096 --vram 128 
+VBoxManage modifyvm $myvmname --cpus $cpu_num --memory $ram_size --vram $vram_size 
 VBoxManage modifyvm $myvmname --pae on
 VBoxManage modifyvm $myvmname --accelerate3d on
 
@@ -76,8 +83,8 @@ VBoxManage storagectl $myvmname --name "IDE Controller" --add ide
 #VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium $myisopath
 VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium emptydrive
 
-# Create Disk File size 20GB Dynamic Allocation (Standard vs. Fixed)
-VBoxManage createhd --filename "$myvmhome/$myvmname.vdi" --size 20480 --variant Standard 
+# Create Disk File with Dynamic Allocation (Standard vs. Fixed). Standard means "Dynamic"
+VBoxManage createhd --filename "$myvmhome/$myvmname.vdi" --size $hd_size --variant $hd_variant 
 
 # Create Storage Controller for Disk and Make Bootable
 VBoxManage storagectl $myvmname --name "SATA Controller" --add sata --bootable on
