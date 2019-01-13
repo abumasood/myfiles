@@ -40,9 +40,7 @@ hd_size=20480   			# Hard drive size in MB
 hd_variant="Standard"		# Choose either Standard (Dynamic) or Fixed
 vram_size=128   			# VRAM size in MB
 os_type="ArchLinux_64" 		# Arch Linux 64-bit
-
-# Enter path to your iso here
-#myisopath="$HOME/Downloads/Arco-ISOs-Beta/arcolinux-v19.01.3.iso"
+graphics_ctl="vboxvga"		# Options: vboxvga, vboxsvga, or vmsvga. 
 
 # Create and register VM
 VBoxManage createvm --name $myvmname --ostype $os_type --register
@@ -60,7 +58,7 @@ VBoxManage modifyvm $myvmname --biosbootmenu messageandmenu
 VBoxManage modifyvm $myvmname --boot1 dvd --boot2 disk --boot3 none --boot4 none
 
 # Assign CPUs, Memory, Display, and Video Memory
-VBoxManage modifyvm $myvmname --graphicscontroller vboxvga
+VBoxManage modifyvm $myvmname --graphicscontroller $graphics_ctl
 VBoxManage modifyvm $myvmname --cpus $cpu_num --memory $ram_size --vram $vram_size 
 VBoxManage modifyvm $myvmname --pae on
 VBoxManage modifyvm $myvmname --accelerate3d on
@@ -76,11 +74,10 @@ VBoxManage modifyvm $myvmname --audioout on
 VBoxManage modifyvm $myvmname --clipboard bidirectional
 VBoxManage modifyvm $myvmname --draganddrop bidirectional
  
-# Create CD/DVD Controller
+# Create CD/DVD IDE Controller
 VBoxManage storagectl $myvmname --name "IDE Controller" --add ide
 
-# Attached Bootable ISO to CD/DVD Drive
-#VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium $myisopath
+# Attach IDE Controller to CD/DVD Drive
 VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium emptydrive
 
 # Create Disk File with Dynamic Allocation (Standard vs. Fixed). Standard means "Dynamic"
