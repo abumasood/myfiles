@@ -6,7 +6,7 @@ set -e
 # GitHub    :   https://github.com/abumasood
 ##################################################################################################################
 #
-#   Script to Create Single VirtualBox VM
+#   Script to Create Single VirtualBox 6 VM
 #
 ##################################################################################################################
 # This script will create a single "Arch Linux 64-bit" virtualbox machine. The user will be asked to input a
@@ -16,31 +16,25 @@ set -e
 #					- 2 CPUs, 4GB RAM, 20GB Hard Drive
 #					- vboxvga display controller with 128MB video memory
 # 		- After the virtual machine is created, attach the desired iso and start the VM. 
-# 
-# To automate attachment of iso and starting the VM, do the following:
-#		- Adjust Location of the bootable iso, uncomment myisopath variable and adjust iso path 
-#				   	(i.e. $HOME/Downloads/Arco-ISOs-Beta)
-#		- Uncomment and adjust "Attached Bootable ISO to CD/DVD Drive" section
-#		- uncomment the last line to start virtual machine immediately after creation
 ##################################################################################################################
 
 echo "#############################################################"
-echo "#        This script will create a virtualbox vm            #"
+echo "#        This script will create a VBox 6 VM                #"
 echo "#############################################################"
 echo -n "Enter vm name: "
 
 read myvmname
-myvmhome="$HOME/VirtualBox VMs/$myvmname"
-today=$(date)
 
 # Set basic VM specs. Adjust to your preference
-cpu_num=2       			# Number of CPUs
-ram_size=4096   			# RAM size in MB
-hd_size=20480   			# Hard drive size in MB
-hd_variant="Standard"		# Choose either Standard (Dynamic) or Fixed
-vram_size=128   			# VRAM size in MB
-os_type="ArchLinux_64" 		# Arch Linux 64-bit
-graphics_ctl="vboxvga"		# Options: vboxvga, vboxsvga, or vmsvga. 
+myvmhome="$HOME/VirtualBox VMs/$myvmname"	# Filesystem path where the VM is created
+today=$(date)								# Today's date used to time-stamp VM creation
+cpu_num=2       							# Number of CPUs
+ram_size=4096   							# RAM size in MB
+hd_size=20480   							# Hard drive size in MB
+hd_variant="Standard"						# Choose either Standard (Dynamic) or Fixed
+vram_size=128   							# VRAM size in MB
+os_type="ArchLinux_64" 						# Arch Linux 64-bit
+graphics_ctl="vboxvga"						# Options: vboxvga, vboxsvga, or vmsvga. 
 
 # Create and register VM
 VBoxManage createvm --name $myvmname --ostype $os_type --register
@@ -92,5 +86,3 @@ VBoxManage storageattach $myvmname --storagectl "SATA Controller" --port 0 --dev
 # Turn on USB 2.0 Controller
 VBoxManage modifyvm $myvmname --usbehci on
 
-# Now Start VM 
-#VBoxManage startvm $myvmname
