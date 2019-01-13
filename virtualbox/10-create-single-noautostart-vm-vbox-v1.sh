@@ -1,22 +1,41 @@
 #!/bin/bash
 set -e
+
 ##################################################################################################################
 # Author 	: 	Marco Obaid
 # GitHub    :   https://github.com/abumasood
 ##################################################################################################################
 #
-#   Script to Create VirtualBox VM
+#   Script to Create Single VirtualBox VM
 #
 ##################################################################################################################
+# This script will create a single "Arch Linux 64-bit" virtualbox machine. The user will be asked to input a
+# desired name for the VM. The script will then create the VM as follows:
+# 		- Location of VM is the default $HOME/VirtualBox VMs/ 
+#		- Main Specs of the VM are as follows (parameters can be adjusted to your liking):
+#					- 2 CPUs, 4GB RAM, 20GB Hard Drive
+#					- vboxvga display controller with 128MB video memory
+# 		- After the virtual machine is created, attach the desired iso and start the VM. 
+# 
+# To automate attachment of iso and starting the VM, do the following:
+#		- Adjust Location of the bootable iso, uncomment myisopath variable and adjust iso path 
+#				   	(i.e. $HOME/Downloads/Arco-ISOs-Beta)
+#		- Uncomment and adjust "Attached Bootable ISO to CD/DVD Drive" section
+#		- uncomment the last line to start virtual machine immediately after creation
+##################################################################################################################
 
-echo -n "Enter VM name: "
+echo "#############################################################"
+echo "# This script will create a virtualbox vm and auto-start it #"
+echo "#############################################################"
+
+echo -n "Enter vm name: "
+
 read myvmname
-echo $myvmname
 
-##yvmhome="/home/abumasood/VirtualBox VMs/$myvmname"
-#myisopath="/home/abumasood/Downloads/Arco-ISOs-Beta/arcolinux-v19.01.3.iso"
 myvmhome="$HOME/VirtualBox VMs/$myvmname"
-myisopath="$HOME/Downloads/Arco-ISOs-Beta/arcolinux-v19.01.3.iso"
+
+# Enter path to your iso here
+#myisopath="$HOME/Downloads/Arco-ISOs-Beta/arcolinux-v19.01.3.iso"
 
 # Create and register VM
 VBoxManage createvm --name $myvmname --ostype ArchLinux_64 --register
@@ -54,7 +73,8 @@ VBoxManage modifyvm $myvmname --draganddrop bidirectional
 VBoxManage storagectl $myvmname --name "IDE Controller" --add ide
 
 # Attached Bootable ISO to CD/DVD Drive
-VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium $myisopath
+#VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium $myisopath
+VBoxManage storageattach $myvmname --storagectl "IDE Controller" --port 1  --device 0 --type dvddrive --medium emptydrive
 
 # Create Disk File size 20GB Dynamic Allocation (Standard vs. Fixed)
 VBoxManage createhd --filename "$myvmhome/$myvmname.vdi" --size 20480 --variant Standard 
@@ -65,8 +85,8 @@ VBoxManage storagectl $myvmname --name "SATA Controller" --add sata --bootable o
 # Attach Disk to Controller
 VBoxManage storageattach $myvmname --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "$myvmhome/$myvmname.vdi"
 
-# Turn off USB 2.0 Controller
+# Turn on USB 2.0 Controller
 VBoxManage modifyvm $myvmname --usbehci on
 
 # Now Start VM 
-VBoxManage startvm $myvmname
+#VBoxManage startvm $myvmname
