@@ -5,12 +5,13 @@ set -e
 # GitHub    :   https://github.com/abumasood
 ##################################################################################################################
 #
-#   Script to Create Multiple VirtualBox VMs 
+#   Script to Batch-Create Multiple VirtualBox VMs
 #  
 ##################################################################################################################
 # This script will create a BATCH of "Arch Linux 64-bit" virtualbox machines. The script will check a designated
 # "ISOs" folder that contains the installation ISOs, and will then generate a list of VMs to be created. 
-# The name of each VM will match the respective ISO, minus the .iso extention. Each VM will be created as follows:
+# The name of each VM will match the name of its respective ISO, minus the .iso extention. 
+# Each VM will be created as follows:
 # 		- Location of VM is the default $HOME/VirtualBox VMs/ 
 #		- Main Specs of the VM are as follows (parameters can be adjusted to your liking):
 #					- 2 CPUs, 4GB RAM, 20GB Hard Drive
@@ -18,8 +19,9 @@ set -e
 # 		- After the virtual machine is created, its respective iso will be attached
 ##################################################################################################################
 
-myisofolder="$HOME/Downloads/ISOss"				# Folder containing installation ISOs
+myisofolder="$HOME/Downloads/ISOs"				# Folder containing installation ISOs
 
+# Check if ISO folder is empty
 if [ "$(ls -A $myisofolder)" ]; then
 	echo "Found ISOs in $myisofolder"
 
