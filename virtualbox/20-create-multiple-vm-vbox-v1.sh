@@ -10,13 +10,13 @@ set -e
 ##################################################################################################################
 
 # Generate a List of VM Names to be Created
-ls $HOME/Downloads/Arco-ISOs-Beta | sed 's/.iso//g' > input.txt
+ls $HOME/Downloads/ISOs | sed 's/.iso//g' > input.txt
 
 # Read Input File and Assig a VM Name
 cat input.txt | while read myvmname; do
 
 myvmhome="$HOME/VirtualBox VMs/$myvmname"
-myisopath="$HOME/Downloads/Arco-ISOs-Beta/$myvmname.iso"
+myisopath="$HOME/Downloads/ISOs/$myvmname.iso"
 
 # Create and register VM
 VBoxManage createvm --name $myvmname --ostype ArchLinux_64 --register
