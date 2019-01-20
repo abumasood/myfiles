@@ -16,7 +16,7 @@ set -e
 #		- Main Specs of the VM are as follows (parameters can be adjusted to your liking):
 #					- 2 CPUs, 4GB RAM, 20GB Hard Drive
 #					- vboxvga display controller with 128MB video memory
-# 		- After the virtual machine is created, its respective iso will be attached
+# 		- After the virtual machine is created, its respective iso will be attached and ready to boot.
 ##################################################################################################################
 
 myisofolder="$HOME/Downloads/ISOs"				# Folder containing installation ISOs
