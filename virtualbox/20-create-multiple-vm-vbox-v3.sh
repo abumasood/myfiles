@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 ##################################################################################################################
-# Author 	: 	Marco Obaid
-# GitHub    :   https://github.com/abumasood
+# Author: 	Marco Obaid
+# GitHub:   https://github.com/abumasood
 ##################################################################################################################
 #
 #   Script to Batch-Create Multiple VirtualBox VMs
