@@ -1,13 +1,13 @@
 ## VirtualBox Virtual Machine (VM) Creation Scripts
 
-The intent of these scripts is to expedite the creation of virtual machines by leveraging the commandline functionality of VirtualBox. While the scripts were tested only on Linux, it is possible that they will work on Mac and Windows, with slight modification.
+The intent of these scripts is to expedite the creation of virtual machines by leveraging the commandline functionality of VirtualBox. While the scripts were tested only on Linux, it is possible that they will work on Mac and Windows with slight modification.
 
-For an average user, creating a virtual machine using VirtualBox graphical interface requires a series of steps, including defining the VM specs and attaching the boot media. This process may be too slow for heavy VirtualBox users who have the need to create VMs frequently, or large number of VMs (i.e. Beta-testers).
+For an average user, creating a virtual machine using VirtualBox graphical interface requires a series of steps, including defining the VM specs and attaching the boot media. This process may be too slow for heavy VirtualBox users who have the need to create VMs frequently, or large number of VMs (i.e. Beta-testers).It may also be desired to script the VM creation.
 
 This page provides three scripts that should help accomplish the stated objective. The scenarios that these scripts cover are as follows:
 1. Single VM creation
-  * Create VM and start the VM *(10-create-single-autostart-vm-vbox)*
-  * Create VM only *(do not start VM)* - *10-create-single-noautostart-vm-vbox)*
+  * Create VM and start the VM - *(10-create-single-autostart-vm-vbox)*
+  * Create VM only *(do not start VM)* - *(10-create-single-noautostart-vm-vbox)*
 2.  Multiple VMs Creation - the script will target a folder that has all the iso media files.
 
 The scripts default to ArchLinux 64-bit as the desired guest operating system. The "ostype" parameter can be tweaked to your liking. To change this parameter, find your desired value by running this command:
@@ -32,11 +32,12 @@ This script will look into a designated folder that contains all the installatio
 - Designate a folder for your ISOs; for example, ~/Downloads/ISOs/
 - Download all your ISOs to this folder.
 - Run this script
-- For each iso you have in your ISOs folder, the script will create a matching VM with the pre-defined VM specs in the script. You can modify these specs to your likings. *The default is:
-2 CPUs
-4GB RAM
-128MB video memory
-vboxvga display driver.*
+- For each iso you have in your ISOs folder, the script will create a matching VM with the pre-defined VM specs in the script. You can modify these specs to your likings.
+The default specs are:
+ - 2 CPUs
+ - 4GB RAM
+ - 128MB video memory
+ - vboxvga display driver.
 
 - The script will also auto-mount the respective iso.
 - Now you can start the VMs manually.
