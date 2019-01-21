@@ -34,10 +34,10 @@ This script will look into a designated folder that contains all the installatio
 - Run this script
 - For each iso you have in your ISOs folder, the script will create a matching VM with the pre-defined VM specs in the script. You can modify these specs to your likings.
 The default specs are:
- - 2 CPUs
- - 4GB RAM
- - 128MB video memory
- - vboxvga display driver.
+   - 2 CPUs
+   - 4GB RAM
+   - 128MB video memory
+   - vboxvga display driver.
 
 - The script will also auto-mount the respective iso.
 - Now you can start the VMs manually.
