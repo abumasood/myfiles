@@ -10,6 +10,10 @@ This page provides three scripts that should help accomplish the stated objectiv
   * Create VM only *(do not start VM)* - *10-create-single-noautostart-vm-vbox)*
 2.  Multiple VMs Creation - the script will target a folder that has all the iso media files.
 
+The scripts default to ArchLinux 64-bit as the desired guest operating system. The "ostype" parameter can be tweaked to your liking. To change this parameter, find your desired value by running this command:
+
+_`# VBoxManage list ostypes`_
+
 *For a comprehensive details on the commandline interface of VirtualBox, refer to [VirtualBox Manual](https://www.virtualbox.org/manual/ch08.html#vboxmanage-createvm).*
 
 ___
