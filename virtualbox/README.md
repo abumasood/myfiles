@@ -8,7 +8,7 @@ This page provides three scripts that should help accomplish the stated objectiv
 1. Single VM creation
   * Create VM and start the VM - *(10-create-single-autostart-vm-vbox)*
   * Create VM only *(do not start VM)* - *(10-create-single-noautostart-vm-vbox)*
-2.  Multiple VMs Creation - the script will target a folder that has all the iso media files.
+2.  Multiple VMs Creation - *(20-create-multiple-vm-vbox)* the script will target a folder that has all the iso media files.
 
 The scripts default to ArchLinux 64-bit as the desired guest operating system. The "ostype" parameter can be tweaked to your liking. To change this parameter, find your desired value by running this command:
 
@@ -31,7 +31,7 @@ This script will look into a designated folder that contains all the installatio
 
 - Designate a folder for your ISOs; for example, ~/Downloads/ISOs/
 - Download all your ISOs to this folder.
-- Run this script
+- Run "*20-create-multiple-vm-vbox*" script
 - For each iso you have in your ISOs folder, the script will create a matching VM with the pre-defined VM specs in the script. You can modify these specs to your likings.
 The default specs are:
    - 2 CPUs
