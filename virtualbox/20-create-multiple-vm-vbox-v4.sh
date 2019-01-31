@@ -22,11 +22,11 @@ set -e
 myisofolder="$HOME/Downloads/ISOs"				# Folder containing installation ISOs
 
 # Check if ISO folder is empty
-if [ "$(ls -A $myisofolder)" ]; then
+if [ "$(ls -A $myisofolder/*.iso 2>/dev/null)" ]; then
 	echo "Found ISOs in $myisofolder"
 
 	# Generate a List of VM Names to be Created
-	ls $myisofolder | sed 's/.iso//g' > /tmp/input.txt  # Generate a list of VM names
+	ls $myisofolder/*.iso | xargs -n1 basename | sed 's/.iso//g' > /tmp/input.txt  # Generate a list of VM names
 
 	# Read Input File and Assig a VM Name
 	cat /tmp/input.txt | while read myvmname; do
