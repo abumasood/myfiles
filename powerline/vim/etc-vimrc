@@ -1,4 +1,1 @@
-### Append this line to /etc/vimrc to fix Powerline vim plugin issue on python3 distributions
-### More details https://github.com/powerline/pkg-archlinux/issues/2
-### A logout/login or reboot maybe necessary
 let g:powerline_pycmd = 'py3'
